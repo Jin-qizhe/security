@@ -1,0 +1,14 @@
+#开发环境配置
+server:
+  port: 8765
+
+#Spring 配置
+spring:
+  profiles:
+    active: local
+
+#Mybatis plus配置
+#mybatis-plus:
+#  configuration:
+#    map-underscore-to-camel-case: true
+#  mapper-locations: classpath:/mapper/*.xml
