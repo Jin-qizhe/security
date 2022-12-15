@@ -5,10 +5,13 @@ import com.test.security.constant.Constants;
 import com.test.security.entity.LoginUser;
 import com.test.security.entity.SysUser;
 import com.test.security.mapper.SysUserMapper;
+import com.test.security.server.TokenServer;
 import com.test.security.service.ISysUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,6 +36,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Resource
     private AuthenticationManager authenticationManager;
+    @Resource
+    private TokenServer tokenServer;
 
     @Override
     public String login(String username, String password) {
@@ -43,17 +48,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 该方法会去调用UserDetailsServiceImpl.loadUserByUsername
         authentication = authenticationManager.authenticate(authenticationToken);
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-
-        return createToken(loginUser);
-    }
-
-    private String createToken(LoginUser loginUser) {
-        String token = UUID.randomUUID().toString();
-        loginUser.setToken(token);
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(Constants.LOGIN_USER_KEY, token);
-        token = Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, "abcdefghijklmnopqrstuvwxyz").compact();
-        return token;
+        return tokenServer.createToken(loginUser);
     }
 
     @Override

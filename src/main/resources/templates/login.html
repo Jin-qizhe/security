@@ -65,7 +65,7 @@
             // layer.msg(JSON.stringify(data.field));
             $.post("/doLogin", data.field, function (res) {
                 if ('200' == res.code) {
-                    layer.alert(res.msg);
+                    location.href = "/index";
                 } else {
                     layer.alert(res.msg);
                 }

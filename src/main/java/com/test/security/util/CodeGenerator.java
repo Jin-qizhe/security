@@ -52,7 +52,7 @@ public class CodeGenerator {
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
 //        dsc.setUrl("jdbc:mysql://localhost:3306/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8");
-        dsc.setUrl("jdbc:mysql://127.0.0.1:3306/ry-vue?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&serverTimezone=Asia/Shanghai");
+        dsc.setUrl("jdbc:mysql://localhost:3306/my_security?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&serverTimezone=Asia/Shanghai");
         // dsc.setSchemaName("public");
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");

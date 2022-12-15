@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -33,7 +34,11 @@ public class LoginController {
     @ResponseBody
     public AjaxResult doLogin(String username, String password) {
         String token = iSysUserService.login(username,password);
-        System.out.println("token:------------->" + token);
         return AjaxResult.success(token);
+    }
+
+    @RequestMapping("/index")
+    public String index() {
+        return "/index" ;
     }
 }

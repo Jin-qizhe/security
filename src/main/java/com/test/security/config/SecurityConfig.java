@@ -1,11 +1,15 @@
 package com.test.security.config;
 
+import com.test.security.filter.AuthenticationEntryPointFilter;
+import com.test.security.filter.JwtAuthenticationTokenFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @Author jin
@@ -14,6 +18,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  */
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    //token认证过滤器
+    @Autowired
+    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    //认证失败处理类
+    @Autowired
+    private AuthenticationEntryPointFilter authenticationEntryPointFilter;
 
     /**
      * anyRequest          |   匹配所有请求路径
@@ -37,13 +48,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //过滤请求
                 .authorizeRequests()
                 // 对于login接口允许匿名访问
-                .antMatchers("/login", "/doLogin", "/test").permitAll()
+                .antMatchers("/login", "/doLogin", "/test", "/index").permitAll()
                 //对于所有静态资源允许匿名访问
-                .antMatchers("/css/**", "/js/**", "/image/**", "/layuiadmin/**").permitAll()
+                .antMatchers("/css/**", "/js/**", "/image/**", "/layuiadmin/**","/favicon.ico").permitAll()
                 //swagger文档
                 .antMatchers("/swagger-ui.html", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/doc.html").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
+        // 添加JWT filter
+        httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        //认证失败处理类
+        httpSecurity.exceptionHandling().authenticationEntryPoint(authenticationEntryPointFilter);
     }
 
     /**
@@ -62,8 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * 解决There is no PasswordEncoder mapped for the id "null" 问题
      */
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder()
-    {
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
