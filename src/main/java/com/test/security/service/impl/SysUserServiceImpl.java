@@ -38,6 +38,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private AuthenticationManager authenticationManager;
     @Resource
     private TokenServer tokenServer;
+    @Resource
+    private SysUserMapper sysUserMapper;
 
     @Override
     public String login(String username, String password) {
@@ -53,9 +55,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public SysUser getUserByName(String username) {
+//        SysUser user = sysUserMapper.getUserByName(username);
         QueryWrapper<SysUser> qw = new QueryWrapper<>();
         qw.eq("user_name", username);
-        SysUser one = getOne(qw);
-        return one;
+        SysUser user = getOne(qw);
+        return user;
     }
 }

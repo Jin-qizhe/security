@@ -3,6 +3,7 @@ package com.test.security.service.impl;
 import com.test.security.entity.LoginUser;
 import com.test.security.entity.SysUser;
 import com.test.security.exception.ServiceException;
+import com.test.security.server.PermissionServer;
 import com.test.security.service.ISysUserService;
 import com.test.security.util.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.HashSet;
 
 /**
@@ -29,8 +31,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private ISysUserService iSysUserService;
-//    @Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Resource
+    private PermissionServer permissionServer;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -45,7 +47,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 throw new ServiceException("密码错误");
             }
         }
-        return new LoginUser(user, new HashSet<>());
+        return new LoginUser(user, permissionServer.getMenuPermission(user));
     }
 
     private boolean passwordValidate(SysUser user) {

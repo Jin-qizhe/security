@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
+    SysUser getUserByName(String username);
 }
